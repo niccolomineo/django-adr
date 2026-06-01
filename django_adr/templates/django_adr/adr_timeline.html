@@ -1,0 +1,21 @@
+{% extends "django_adr/base_django_adr.html" %}
+{% load i18n %}
+{% block title %}{% trans "ADR timeline" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "ADR timeline" %}</h1>
+    {% for chain in chains %}
+        <ol>
+            {% for adr in chain %}
+                <li>
+                    <a
+                        href="{% url 'django_adr:adr-detail' adr.number %}"
+                    >{% trans "ADR-" %}{{ adr.number|stringformat:"04d" }}</a>
+                    {{ adr.title }} — {{ adr.get_status_display }} ({{ adr.date }})
+                </li>
+            {% endfor %}
+        </ol>
+    {% empty %}
+        <p>{% trans "No ADRs yet." %}</p>
+    {% endfor %}
+    <p><a href="{% url 'django_adr:adr-list' %}">{% trans "Back to list" %}</a></p>
+{% endblock %}
