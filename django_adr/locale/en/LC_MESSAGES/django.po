@@ -1,0 +1,147 @@
+# django-adr English translations.
+# Copyright (C) 2026 Niccolò Mineo
+# This file is distributed under the MIT license.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-adr 0.0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-01 11:07-0500\n"
+"PO-Revision-Date: 2026-06-01 00:00+0000\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: django_adr/admin.py django_adr/templates/django_adr/adr_detail.html
+msgid "Context"
+msgstr "Context"
+
+#: django_adr/admin.py django_adr/templates/django_adr/adr_detail.html
+msgid "Decision"
+msgstr "Decision"
+
+#: django_adr/admin.py django_adr/templates/django_adr/adr_detail.html
+msgid "Consequences"
+msgstr "Consequences"
+
+#: django_adr/apps.py django_adr/templates/django_adr/adr_list.html
+msgid "Architectural Decision Records"
+msgstr "Architectural Decision Records"
+
+#: django_adr/models.py
+msgid "Proposed"
+msgstr "Proposed"
+
+#: django_adr/models.py
+msgid "Accepted"
+msgstr "Accepted"
+
+#: django_adr/models.py
+msgid "Deprecated"
+msgstr "Deprecated"
+
+#: django_adr/models.py
+msgid "Superseded"
+msgstr "Superseded"
+
+#: django_adr/models.py
+msgid "Rejected"
+msgstr "Rejected"
+
+#: django_adr/models.py
+msgid "number"
+msgstr "number"
+
+#: django_adr/models.py
+msgid "title"
+msgstr "title"
+
+#: django_adr/models.py
+msgid "status"
+msgstr "status"
+
+#: django_adr/models.py
+msgid "date"
+msgstr "date"
+
+#: django_adr/models.py
+msgid "context"
+msgstr "context"
+
+#: django_adr/models.py
+msgid "decision"
+msgstr "decision"
+
+#: django_adr/models.py
+msgid "consequences"
+msgstr "consequences"
+
+#: django_adr/models.py
+msgid "superseded by"
+msgstr "superseded by"
+
+#: django_adr/models.py
+msgid "ADR"
+msgstr "ADR"
+
+#: django_adr/models.py django_adr/templates/django_adr/base_django_adr.html
+msgid "ADRs"
+msgstr "ADRs"
+
+#: django_adr/models.py
+msgid "A superseded ADR must reference the superseding ADR."
+msgstr "A superseded ADR must reference the superseding ADR."
+
+#: django_adr/models.py
+msgid "Setting a superseding ADR requires status 'Superseded'."
+msgstr "Setting a superseding ADR requires status 'Superseded'."
+
+#: django_adr/templates/django_adr/adr_detail.html
+#: django_adr/templates/django_adr/adr_list.html
+msgid "ADR-"
+msgstr "ADR-"
+
+#: django_adr/templates/django_adr/adr_detail.html
+#: django_adr/templates/django_adr/adr_list.html
+msgid "Status"
+msgstr "Status"
+
+#: django_adr/templates/django_adr/adr_detail.html
+#: django_adr/templates/django_adr/adr_list.html
+msgid "Date"
+msgstr "Date"
+
+#: django_adr/templates/django_adr/adr_detail.html
+msgid "Superseded by"
+msgstr "Superseded by"
+
+#: django_adr/templates/django_adr/adr_detail.html
+msgid "Back to list"
+msgstr "Back to list"
+
+#: django_adr/templates/django_adr/adr_list.html
+msgid "All"
+msgstr "All"
+
+#: django_adr/templates/django_adr/adr_list.html
+msgid "Number"
+msgstr "Number"
+
+#: django_adr/templates/django_adr/adr_list.html
+msgid "Title"
+msgstr "Title"
+
+#: django_adr/templates/django_adr/adr_list.html
+msgid "No ADRs yet."
+msgstr "No ADRs yet."
+
+#~ msgid "Context (rendered)"
+#~ msgstr "Context (rendered)"
+
+#~ msgid "Decision (rendered)"
+#~ msgstr "Decision (rendered)"
+
+#~ msgid "Consequences (rendered)"
+#~ msgstr "Consequences (rendered)"

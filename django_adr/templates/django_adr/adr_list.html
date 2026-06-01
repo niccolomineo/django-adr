@@ -1,0 +1,40 @@
+{% extends "django_adr/base_django_adr.html" %}
+{% load i18n %}
+{% block title %}{% trans "Architectural Decision Records" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "Architectural Decision Records" %}</h1>
+    <nav>
+        <a href="{% url 'django_adr:adr-list' %}">{% trans "All" %}</a>
+        {% for value, label in statuses %}
+            <a href="?status={{ value }}" {% if value == current_status %}aria-current="page"{% endif %}>{{ label }}</a>
+        {% endfor %}
+    </nav>
+    <table>
+        <thead>
+            <tr>
+                <th>{% trans "Number" %}</th>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Status" %}</th>
+                <th>{% trans "Date" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for adr in adrs %}
+                <tr>
+                    <td>
+                        <a
+                            href="{% url 'django_adr:adr-detail' adr.number %}"
+                        >{% trans "ADR-" %}{{ adr.number|stringformat:"04d" }}</a>
+                    </td>
+                    <td>{{ adr.title }}</td>
+                    <td>{{ adr.get_status_display }}</td>
+                    <td>{{ adr.date }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">{% trans "No ADRs yet." %}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

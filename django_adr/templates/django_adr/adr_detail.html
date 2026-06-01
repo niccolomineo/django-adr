@@ -1,0 +1,35 @@
+{% extends "django_adr/base_django_adr.html" %}
+{% load i18n %}
+{% block title %}{% trans "ADR-" %}{{ adr.number|stringformat:"04d" }}: {{ adr.title }}{% endblock %}
+{% block content %}
+    <article>
+        <header>
+            <h1>{% trans "ADR-" %}{{ adr.number|stringformat:"04d" }}: {{ adr.title }}</h1>
+            <dl>
+                <dt>{% trans "Status" %}</dt>
+                <dd>{{ adr.get_status_display }}</dd>
+                <dt>{% trans "Date" %}</dt>
+                <dd>{{ adr.date }}</dd>
+                {% if adr.superseded_by %}
+                    <dt>{% trans "Superseded by" %}</dt>
+                    <dd>
+                        <a href="{% url 'django_adr:adr-detail' adr.superseded_by.number %}">{{ adr.superseded_by }}</a>
+                    </dd>
+                {% endif %}
+            </dl>
+        </header>
+        <section>
+            <h2>{% trans "Context" %}</h2>
+            {{ adr.context_html|safe }}
+        </section>
+        <section>
+            <h2>{% trans "Decision" %}</h2>
+            {{ adr.decision_html|safe }}
+        </section>
+        <section>
+            <h2>{% trans "Consequences" %}</h2>
+            {{ adr.consequences_html|safe }}
+        </section>
+    </article>
+    <p><a href="{% url 'django_adr:adr-list' %}">{% trans "Back to list" %}</a></p>
+{% endblock %}
