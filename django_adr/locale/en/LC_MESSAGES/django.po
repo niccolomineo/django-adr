@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: django-adr 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 11:07-0500\n"
+"POT-Creation-Date: 2026-08-21 01:55-0500\n"
 "PO-Revision-Date: 2026-06-01 00:00+0000\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
@@ -98,8 +98,17 @@ msgstr "A superseded ADR must reference the superseding ADR."
 msgid "Setting a superseding ADR requires status 'Superseded'."
 msgstr "Setting a superseding ADR requires status 'Superseded'."
 
+#: django_adr/models.py
+msgid "An ADR cannot supersede itself."
+msgstr ""
+
+#: django_adr/models.py
+msgid "This ADR is already superseded."
+msgstr ""
+
 #: django_adr/templates/django_adr/adr_detail.html
 #: django_adr/templates/django_adr/adr_list.html
+#: django_adr/templates/django_adr/adr_timeline.html
 msgid "ADR-"
 msgstr "ADR-"
 
@@ -118,6 +127,11 @@ msgid "Superseded by"
 msgstr "Superseded by"
 
 #: django_adr/templates/django_adr/adr_detail.html
+msgid "Supersession history"
+msgstr ""
+
+#: django_adr/templates/django_adr/adr_detail.html
+#: django_adr/templates/django_adr/adr_timeline.html
 msgid "Back to list"
 msgstr "Back to list"
 
@@ -134,8 +148,13 @@ msgid "Title"
 msgstr "Title"
 
 #: django_adr/templates/django_adr/adr_list.html
+#: django_adr/templates/django_adr/adr_timeline.html
 msgid "No ADRs yet."
 msgstr "No ADRs yet."
+
+#: django_adr/templates/django_adr/adr_timeline.html
+msgid "ADR timeline"
+msgstr ""
 
 #~ msgid "Context (rendered)"
 #~ msgstr "Context (rendered)"

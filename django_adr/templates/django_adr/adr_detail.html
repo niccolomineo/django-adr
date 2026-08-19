@@ -30,6 +30,22 @@
             <h2>{% trans "Consequences" %}</h2>
             {{ adr.consequences_html|safe }}
         </section>
+        {% if chain|length > 1 %}
+            <section>
+                <h2>{% trans "Supersession history" %}</h2>
+                <ol>
+                    {% for entry in chain %}
+                        <li>
+                            {% if entry.number == adr.number %}
+                                <strong aria-current="true">{{ entry }}</strong>
+                            {% else %}
+                                <a href="{% url 'django_adr:adr-detail' entry.number %}">{{ entry }}</a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ol>
+            </section>
+        {% endif %}
     </article>
     <p><a href="{% url 'django_adr:adr-list' %}">{% trans "Back to list" %}</a></p>
 {% endblock %}

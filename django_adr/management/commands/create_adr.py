@@ -50,13 +50,20 @@ class Command(BaseCommand):
 
     def handle(self, *args: Any, **options: Any) -> None:
         """Create and save the ADR."""
-        if options["supersedes"] is not None:
+        supersedes = options["supersedes"]
+        if options["status"] == ADR.Status.SUPERSEDED:
+            raise CommandError(
+                "An ADR cannot be created as superseded. Create it, then supersede it "
+                "with a later ADR."
+            )
+        old = None
+        if supersedes is not None:
             try:
-                old = ADR.objects.get(number=options["supersedes"])
+                old = ADR.objects.get(number=supersedes)
             except ADR.DoesNotExist as exc:
-                raise CommandError(f"ADR-{options['supersedes']:04d} does not exist.") from exc
-        else:
-            old = None
+                raise CommandError(f"ADR-{supersedes:04d} does not exist.") from exc
+            if old.status == ADR.Status.SUPERSEDED:
+                raise CommandError(f"{old} is already superseded.")
         with transaction.atomic():
             adr = ADR.objects.create(
                 title=options["title"],
@@ -67,7 +74,5 @@ class Command(BaseCommand):
             )
             self.stdout.write(self.style.SUCCESS(f"Created {adr}"))
             if old is not None:
-                old.superseded_by = adr
-                old.status = ADR.Status.SUPERSEDED
-                old.save()
+                old.supersede_with(adr)
                 self.stdout.write(self.style.WARNING(f"Marked {old} as superseded."))

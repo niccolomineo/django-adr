@@ -121,3 +121,56 @@ class TestADRDetailView(TestCase):
         response = self.client.get(url)
         self.assertContains(response, "Superseded by")
         self.assertContains(response, reverse("django_adr:adr-detail", args=[new.number]))
+
+
+class TestADRDetailViewChain(TestCase):
+    """Test the supersession history section of the detail view."""
+
+    def test_chain_section_is_hidden_for_an_unlinked_adr(self) -> None:
+        """Test that a lone ADR's page shows no supersession history."""
+        adr = ADR.objects.create(title="Alone", context="c", decision="d", consequences="c")
+        url = reverse("django_adr:adr-detail", args=[adr.number])
+        self.assertNotContains(self.client.get(url), "Supersession history")
+
+    def test_chain_section_lists_the_whole_lineage(self) -> None:
+        """Test that every ADR in the lineage appears on the detail page."""
+        first = ADR.objects.create(title="First", context="c", decision="d", consequences="c")
+        second = ADR.objects.create(title="Second", context="c", decision="d", consequences="c")
+        third = ADR.objects.create(title="Third", context="c", decision="d", consequences="c")
+        first.supersede_with(second)
+        second.supersede_with(third)
+        url = reverse("django_adr:adr-detail", args=[second.number])
+        response = self.client.get(url)
+        self.assertContains(response, "Supersession history")
+        self.assertContains(response, reverse("django_adr:adr-detail", args=[first.number]))
+        self.assertContains(response, reverse("django_adr:adr-detail", args=[third.number]))
+
+
+class TestADRTimelineView(TestCase):
+    """Test the ADR timeline view."""
+
+    def test_timeline_returns_200(self) -> None:
+        """Test that the timeline view returns HTTP 200."""
+        response = self.client.get(reverse("django_adr:adr-timeline"))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+
+    def test_timeline_uses_correct_template(self) -> None:
+        """Test that the timeline view uses the django_adr/adr_timeline.html template."""
+        response = self.client.get(reverse("django_adr:adr-timeline"))
+        self.assertTemplateUsed(response, "django_adr/adr_timeline.html")
+
+    def test_timeline_shows_placeholder_when_empty(self) -> None:
+        """Test that the timeline view shows a placeholder when no ADRs exist."""
+        self.assertContains(self.client.get(reverse("django_adr:adr-timeline")), "No ADRs yet.")
+
+    def test_timeline_lists_each_lineage_once(self) -> None:
+        """Test that ADRs in one lineage are grouped rather than repeated."""
+        first = ADR.objects.create(title="First", context="c", decision="d", consequences="c")
+        second = ADR.objects.create(title="Second", context="c", decision="d", consequences="c")
+        first.supersede_with(second)
+        ADR.objects.create(title="Separate", context="c", decision="d", consequences="c")
+        chains = self.client.get(reverse("django_adr:adr-timeline")).context["chains"]
+        self.assertEqual(
+            [[adr.title for adr in chain] for chain in chains],
+            [["First", "Second"], ["Separate"]],
+        )

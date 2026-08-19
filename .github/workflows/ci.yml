@@ -55,10 +55,53 @@ jobs:
           uv run --no-sync coverage combine
           uv run --no-sync coverage report
 
+  test-postgres:
+    name: Test (PostgreSQL)
+    runs-on: ubuntu-24.04
+    needs: [validate]
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    env:
+      ADR_DB_ENGINE: django.db.backends.postgresql
+      ADR_DB_NAME: postgres
+      ADR_DB_USER: postgres
+      ADR_DB_PASSWORD: postgres
+      ADR_DB_HOST: localhost
+      ADR_DB_PORT: "5432"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: |
+          uv sync --group test
+          uv pip install "psycopg[binary]"
+
+      - name: Test
+        run: uv run --no-sync manage.py test tests --noinput --shuffle
+
   build:
     name: Build
     runs-on: ubuntu-24.04
-    needs: [validate, test]
+    needs: [validate, test, test-postgres]
 
     steps:
       - name: Checkout
@@ -73,6 +116,11 @@ jobs:
         run: |
           uv build
           ls dist/
+
+      - name: Check py.typed ships in the distributions
+        run: |
+          unzip -l dist/*.whl | grep -q 'django_adr/py.typed'
+          tar tzf dist/*.tar.gz | grep -q 'django_adr/py.typed'
 
       - name: Upload distributions
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -101,4 +149,4 @@ jobs:
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
 
       - name: Publish to PyPI
-        run: uv publish
+        run: uv publish --check-url https://pypi.org/simple/

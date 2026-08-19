@@ -1,5 +1,7 @@
 """Minimal Django settings for the test suite."""
 
+import os
+
 SECRET_KEY = "django-adr-test-secret-key-not-for-production"
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -12,8 +14,12 @@ INSTALLED_APPS = [
 ]
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": ":memory:",
+        "ENGINE": os.environ.get("ADR_DB_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("ADR_DB_NAME", ":memory:"),
+        "USER": os.environ.get("ADR_DB_USER", ""),
+        "PASSWORD": os.environ.get("ADR_DB_PASSWORD", ""),
+        "HOST": os.environ.get("ADR_DB_HOST", ""),
+        "PORT": os.environ.get("ADR_DB_PORT", ""),
     }
 }
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

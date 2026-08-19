@@ -1,3 +1,3 @@
-"""Django ADR — a package to manage Architectural Decision Records."""
+"""Django ADR — a Django-native decision log for software architecture."""
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"

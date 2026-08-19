@@ -53,8 +53,8 @@ class TestCreateADRCommand(TestCase):
         """Test that successive command invocations assign sequential numbers."""
         call_command("create_adr", "First")
         call_command("create_adr", "Second")
-        numbers = list(ADR.objects.order_by("number").values_list("number", flat=True))
-        self.assertEqual(numbers, [1, 2])
+        first, second = ADR.objects.order_by("number").values_list("number", flat=True)
+        self.assertEqual(second, first + 1)
 
     def test_command_creates_adr_with_empty_text_fields_by_default(self) -> None:
         """Test that the command creates an ADR with empty text fields when not provided."""
@@ -86,3 +86,39 @@ class TestCreateADRCommand(TestCase):
         with self.assertRaises(CommandError):
             call_command("create_adr", "New", "--supersedes=999")
         self.assertFalse(ADR.objects.filter(title="New").exists())
+
+
+class TestCreateADRSupersessionGuards(TestCase):
+    """Test that create_adr refuses to produce inconsistent supersession states."""
+
+    def test_superseded_status_is_rejected(self) -> None:
+        """Test that a new ADR cannot be created already marked as superseded."""
+        with self.assertRaises(CommandError):
+            call_command("create_adr", "Impossible", "--status=superseded")
+        self.assertFalse(ADR.objects.filter(title="Impossible").exists())
+
+    def test_superseded_status_is_rejected_even_with_supersedes(self) -> None:
+        """Test that --supersedes does not licence creating a superseded ADR."""
+        call_command("create_adr", "Existing")
+        existing = ADR.objects.get(title="Existing")
+        with self.assertRaises(CommandError):
+            call_command(
+                "create_adr", "Impossible", "--status=superseded", f"--supersedes={existing.number}"
+            )
+        self.assertFalse(ADR.objects.filter(title="Impossible").exists())
+
+    def test_superseding_an_already_superseded_adr_is_rejected(self) -> None:
+        """Test that an ADR already superseded cannot be superseded a second time."""
+        call_command("create_adr", "Old")
+        old = ADR.objects.get(title="Old")
+        call_command("create_adr", "New", f"--supersedes={old.number}")
+        with self.assertRaises(CommandError):
+            call_command("create_adr", "Newer", f"--supersedes={old.number}")
+        self.assertFalse(ADR.objects.filter(title="Newer").exists())
+
+    def test_supersession_leaves_the_new_adr_proposed(self) -> None:
+        """Test that superseding marks only the old ADR, leaving the new one proposed."""
+        call_command("create_adr", "Old")
+        old = ADR.objects.get(title="Old")
+        call_command("create_adr", "New", f"--supersedes={old.number}")
+        self.assertEqual(ADR.objects.get(title="New").status, ADR.Status.PROPOSED)
