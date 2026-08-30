@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/niccolomineo/django-adr/main/icon.png" alt="django-adr" width="128">
+
 # django-adr
 
 [![PyPI](https://img.shields.io/pypi/v/django-adr?label=pypi)](https://pypi.org/project/django-adr/)
@@ -197,6 +199,7 @@ Or scope it to the ADR router only by subclassing `ADRViewSet`:
 ```python
 from django_adr.api import ADRViewSet
 from rest_framework.permissions import IsAuthenticated
+
 
 class ProtectedADRViewSet(ADRViewSet):
     permission_classes = [IsAuthenticated]
